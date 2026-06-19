@@ -7,10 +7,10 @@ face_data.csv
 recordings/
 
 password*
-users*
 users.csv
-
+users/
 .env
+
 *.db
 *.sqlite3
 
