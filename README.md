@@ -4,8 +4,6 @@ AI-powered smart surveillance system developed as my Final Year Graduation Proje
 
 The project focuses on improving traditional surveillance systems by adding real-time video monitoring, face recognition, video recording, and a web dashboard for managing users and recordings.
 
----
-
 ## Features
 
 - Real-time video monitoring through a Flask web dashboard.
@@ -15,8 +13,6 @@ The project focuses on improving traditional surveillance systems by adding real
 - Recording history with play, download, delete, and search options.
 - Admin dashboard for user management.
 - Role-based access for Admin, Manager, and Employee users.
-
----
 
 ## Technologies Used
 
@@ -29,8 +25,6 @@ The project focuses on improving traditional surveillance systems by adding real
 - HTML, CSS, JavaScript
 - CSV-based local storage
 
----
-
 ## Results
 
 - Achieved **93% face recognition accuracy** during project testing.
@@ -40,8 +34,6 @@ The project focuses on improving traditional surveillance systems by adding real
 - Video recording is configured at **640×480 resolution** with **15 FPS**.
 - Recording history demo shows **1 saved recording** with a total size of **5.1 MB**.
 - Built **6 main modules**: Login, Live Dashboard, Face Recognition, Face Registration, User Management, and Recording History.
-
----
 
 ## Screenshots
 
@@ -75,8 +67,6 @@ The project focuses on improving traditional surveillance systems by adding real
   <img src="Images/Login%20Interface.png" width="420">
 </p>
 
----
-
 ## Project Structure
 
 ```text
@@ -89,8 +79,6 @@ AI-Smart-Surveillance-System/
 ├── Images/
 └── README.md
 ```
-
----
 
 ## Privacy Note
 
