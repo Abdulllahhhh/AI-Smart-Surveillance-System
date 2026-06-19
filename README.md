@@ -31,5 +31,5 @@ AI-powered smart surveillance system featuring real-time video monitoring, face 
 
 ### Recording History
 <p align="center">
-  <img src="Images/recording-history.png" width="650">
+  <img src="Images/View%20History%20Recording%20History.png" width="650">
 </p>
