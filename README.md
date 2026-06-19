@@ -79,15 +79,3 @@ AI-Smart-Surveillance-System/
 ├── Images/
 └── README.md
 ```
-
-## Privacy Note
-
-Sensitive files are not included in this public repository, such as:
-
-- User data
-- Face embedding data
-- Password files
-- Recorded videos
-- Environment files
-
-This repository is shared for portfolio and CV purposes.
