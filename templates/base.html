@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>intelligent surveillance system- {% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+    {% if session.get('user_logged_in') %}
+    <nav>
+        <div class="logo">
+            <span class="material-icons">camera_alt</span>
+            <span>intelligent surveillance  </span>
+        </div>
+        <ul>
+            <li>
+                <a href="{{ url_for('index') }}" class="{{ 'active' if active_page == 'check-in' }}">
+                    <span class="material-icons">camera</span>
+                    View Live video
+                </a>
+            </li>
+
+            {# ADMIN MENU - Show only for admin users #}
+            {% if session.get('user_role') == 'admin' %}
+            <li>
+                <a href="{{ url_for('users') }}" class="{{ 'active' if active_page == 'users' }}">
+                    <span class="material-icons">people</span>
+                    User Management
+                </a>
+            </li>
+
+
+            {# REGULAR USER MENU - Show only for non-admin users #}
+            {% else %}
+
+            {% endif %}
+            <li>
+              <a href="{{ url_for('recordings_page') }}" class="{{ 'active' if active_page == 'reports' }}">
+                 <span class="material-icons">assessment</span>
+                   View History Recording
+                  </a>
+            </li>
+        </ul>
+
+        <div class="user-logout">
+            <span class="user-info">
+                Welcome, {{ session.get('user_name', 'User') }}
+                ({{ session.get('user_role', 'user') | title }})
+            </span>
+            <a href="{{ url_for('user_logout') }}" class="logout-btn">
+                <span class="material-icons">logout</span>
+                Logout
+            </a>
+        </div>
+    </nav>
+    {% endif %}
+
+    <main>
+        {% if not session.get('user_logged_in') %}
+            <!-- Show login form if not logged in -->
+            <div class="login-container">
+                <div class="login-form">
+                    <div class="login-header">
+                        <span class="material-icons">camera_alt</span>
+                        <h1>intelligent surveillance system</h1>
+                        <p>Please login to continue</p>
+                    </div>
+                    <form id="userLoginForm">
+                        <div class="form-group">
+                            <input type="email" id="loginEmail" placeholder="Email Address" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" id="loginPassword" placeholder="Password" required>
+                        </div>
+                        <button type="submit" class="login-btn">
+                            <span class="material-icons">login</span>
+                            Login
+                        </button>
+                    </form>
+                    <div id="loginMessage" class="login-message"></div>
+                </div>
+            </div>
+        {% else %}
+            <!-- Show actual content if logged in -->
+            {% block content %}{% endblock %}
+        {% endif %}
+    </main>
+
+    <script>
+        // User Login Functionality
+        document.getElementById('userLoginForm')?.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const messageElement = document.getElementById('loginMessage');
+
+            if (!email || !password) {
+                showLoginMessage('Please fill in all fields', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch('/user-login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        password: password
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showLoginMessage('Login successful! Redirecting...', 'success');
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 1000);
+                } else {
+                    showLoginMessage(result.message || 'Login failed', 'error');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showLoginMessage('Network error. Please try again.', 'error');
+            }
+        });
+
+        function showLoginMessage(message, type) {
+            const messageElement = document.getElementById('loginMessage');
+            messageElement.textContent = message;
+            messageElement.className = `login-message ${type}`;
+        }
+    </script>
+
+    <style>
+  .login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Changed from 80vh to 100vh */
+    padding: 20px;
+    margin: 0; /* Remove any default margins */
+    width: 100vw; /* Full viewport width */
+    margin-left: -20px; /* Compensate for any body padding */
+}
+
+.login-form {
+    background: white;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto; /* Ensure centering */
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.login-header .material-icons {
+    font-size: 48px;
+    color: #4CAF50;
+    margin-bottom: 10px;
+}
+
+.login-header h1 {
+    margin: 10px 0;
+    color: #333;
+    font-size: 24px;
+}
+
+.login-header p {
+    color: #666;
+    margin: 0;
+}
+
+.login-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background-color 0.3s;
+}
+
+.login-btn:hover {
+    background-color: #45a049;
+}
+
+.login-message {
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.login-message.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.login-message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.user-info {
+    margin-right: 15px;
+    color: #333;
+    font-weight: 500;
+}
+
+.user-logout {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logout-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 8px 15px;
+    background-color: #f44336;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.logout-btn:hover {
+    background-color: #d32f2f;
+}
+
+/* Add these styles to fix body and main positioning */
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    overflow-x: hidden; /* Prevent horizontal scroll */
+}
+
+main {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+    </style>
+</body>
+</html>

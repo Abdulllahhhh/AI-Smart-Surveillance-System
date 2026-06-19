@@ -1,0 +1,784 @@
+{% extends "base.html" %}
+
+{% block title %}Recording History{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1>Recording History</h1>
+        <p>View and manage all recorded surveillance videos</p>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls-bar">
+        <div class="controls-left">
+            <button id="refreshBtn" class="btn btn-secondary" onclick="loadRecordings()">
+                <span class="material-icons">refresh</span>
+                Refresh
+            </button>
+            <div class="search-box">
+                <span class="material-icons">search</span>
+                <input type="text" id="searchInput" placeholder="Search recordings..." onkeyup="filterRecordings()">
+            </div>
+        </div>
+        <div class="controls-right">
+            <button id="bulkDeleteBtn" class="btn btn-danger" onclick="bulkDeleteRecordings()" disabled>
+                <span class="material-icons">delete</span>
+                Delete Selected
+            </button>
+        </div>
+    </div>
+
+    <!-- Statistics -->
+    <div id="statistics" class="statistics-grid">
+        <div class="stat-card">
+            <span class="material-icons">video_library</span>
+            <div class="stat-info">
+                <h3 id="totalRecordings">0</h3>
+                <p>Total Recordings</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <span class="material-icons">storage</span>
+            <div class="stat-info">
+                <h3 id="totalSize">0 MB</h3>
+                <p>Total Size</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <span class="material-icons">schedule</span>
+            <div class="stat-info">
+                <h3 id="oldestRecording">-</h3>
+                <p>Oldest Recording</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recordings Table -->
+    <div class="table-container">
+        <table id="recordingsTable" class="recordings-table">
+            <thead>
+                <tr>
+                    <th>
+                        <input type="checkbox" id="selectAll" onchange="toggleSelectAll(this)">
+                    </th>
+                    <th>Filename</th>
+                    <th>Date & Time</th>
+                    <th>Size</th>
+                    <th>Duration</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="recordingsTableBody">
+                <!-- Dynamic content will be loaded here -->
+            </tbody>
+        </table>
+        
+        <!-- Empty State -->
+        <div id="emptyState" class="empty-state" style="display: none;">
+            <span class="material-icons">video_library</span>
+            <h3>No Recordings Found</h3>
+            <p>Start recording to see your surveillance videos here.</p>
+            <button class="btn btn-primary" onclick="window.location.href='/'">
+                <span class="material-icons">camera</span>
+                Go to Live View
+            </button>
+        </div>
+    </div>
+
+    <!-- Video Modal -->
+   <!-- Video Modal -->
+    <div id="videoModal" class="modal">
+        <div class="modal-content video-modal">
+            <div class="modal-header">
+                <h3 id="videoModalTitle">Video Playback</h3>
+                <span class="close" onclick="closeVideoModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <video id="videoPlayer" controls style="width: 100%; max-height: 70vh;"
+                       preload="metadata" crossorigin="anonymous">
+                    Your browser does not support the video tag.
+                </video>
+                <div id="videoLoading" style="display: none; text-align: center; padding: 20px;">
+                    <div class="spinner"></div>
+                    <p>Loading video...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Spinner -->
+<div id="loadingSpinner" class="loading-spinner" style="display: none;">
+    <div class="spinner"></div>
+    <p>Loading recordings...</p>
+</div>
+
+<style>
+/* Page Styles */
+.page-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.page-header h1 {
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.page-header p {
+    color: #7f8c8d;
+    font-size: 1.1rem;
+}
+
+/* Controls Bar */
+.controls-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.controls-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.controls-right {
+    display: flex;
+    gap: 1rem;
+}
+
+.search-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-box .material-icons {
+    position: absolute;
+    left: 10px;
+    color: #7f8c8d;
+}
+
+.search-box input {
+    padding: 8px 8px 8px 35px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 250px;
+}
+
+/* Statistics */
+.statistics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border-left: 4px solid #3498db;
+}
+
+.stat-card .material-icons {
+    font-size: 2.5rem;
+    color: #3498db;
+}
+
+.stat-info h3 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 1.8rem;
+}
+
+.stat-info p {
+    margin: 0;
+    color: #7f8c8d;
+}
+
+/* Table Styles */
+.table-container {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.recordings-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.recordings-table th,
+.recordings-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ecf0f1;
+}
+
+.recordings-table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.recordings-table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.recordings-table tbody tr.selected {
+    background-color: #e3f2fd;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #3498db;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #2980b9;
+}
+
+.btn-secondary {
+    background-color: #95a5a6;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #7f8c8d;
+}
+
+.btn-danger {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #c0392b;
+}
+
+.btn-success {
+    background-color: #27ae60;
+    color: white;
+}
+
+.btn-success:hover {
+    background-color: #219a52;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 3rem;
+    color: #7f8c8d;
+}
+
+.empty-state .material-icons {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    color: #bdc3c7;
+}
+
+.empty-state h3 {
+    margin-bottom: 0.5rem;
+    color: #2c3e50;
+}
+
+/* Video Modal */
+.video-modal {
+    max-width: 800px;
+    width: 90%;
+}
+
+.video-modal .modal-body {
+    padding: 0;
+}
+
+/* Loading Spinner */
+.loading-spinner {
+    text-align: center;
+    padding: 2rem;
+}
+
+.spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .controls-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .controls-left, .controls-right {
+        justify-content: center;
+    }
+    
+    .search-box input {
+        width: 100%;
+    }
+    
+    .statistics-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .recordings-table {
+        font-size: 14px;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+    }
+    
+    .btn {
+        justify-content: center;
+    }
+}
+</style>
+
+<script>
+let allRecordings = [];
+let selectedRecordings = new Set();
+
+
+function playRecording(filename) {
+    const videoModal = document.getElementById('videoModal');
+    const videoPlayer = document.getElementById('videoPlayer');
+    const modalTitle = document.getElementById('videoModalTitle');
+    const videoLoading = document.getElementById('videoLoading');
+
+    modalTitle.textContent = `Playing: ${filename}`;
+
+    // Show loading state
+    videoLoading.style.display = 'block';
+    videoPlayer.style.display = 'none';
+
+    // Clear previous source
+    videoPlayer.innerHTML = '';
+
+    // Try multiple sources in sequence
+    const videoSources = [
+        `/video/${filename}`,  // Enhanced streaming route
+        `/play/${filename}`,   // Simple direct route
+        `/api/recordings/${filename}`  // Original API route
+    ];
+
+    let currentSourceIndex = 0;
+
+    function tryNextSource() {
+        if (currentSourceIndex >= videoSources.length) {
+            // All sources failed
+            showVideoError();
+            return;
+        }
+
+        const sourceUrl = videoSources[currentSourceIndex];
+        console.log(`Trying video source: ${sourceUrl}`);
+
+        // Create new source element
+        const source = document.createElement('source');
+        source.src = sourceUrl;
+        source.type = 'video/mp4';
+
+        videoPlayer.appendChild(source);
+        videoPlayer.load();
+
+        currentSourceIndex++;
+    }
+
+    function showVideoError() {
+        videoLoading.style.display = 'none';
+        videoPlayer.style.display = 'block';
+
+        videoPlayer.innerHTML = `
+            <div style="text-align: center; padding: 40px; color: #666;">
+                <span class="material-icons" style="font-size: 48px; color: #e74c3c;">error</span>
+                <h3>Unable to Play Video</h3>
+                <p>The video format may not be supported by your browser.</p>
+                <div style="margin-top: 20px;">
+                    <button class="btn btn-primary" onclick="downloadRecording('${filename}')" style="margin: 5px;">
+                        <span class="material-icons">download</span>
+                        Download Video
+                    </button>
+                    <button class="btn btn-secondary" onclick="convertVideoFormat('${filename}')" style="margin: 5px;">
+                        <span class="material-icons">convert</span>
+                        Convert Format
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+
+    // Event listeners
+    videoPlayer.addEventListener('loadeddata', function() {
+        console.log('✅ Video loaded successfully');
+        videoLoading.style.display = 'none';
+        videoPlayer.style.display = 'block';
+
+        // Try to play automatically
+        videoPlayer.play().catch(e => {
+            console.log('Autoplay prevented, user interaction required');
+        });
+    });
+
+    videoPlayer.addEventListener('canplay', function() {
+        console.log('🎬 Video can start playing');
+    });
+
+    videoPlayer.addEventListener('error', function(e) {
+        console.error('❌ Video error, trying next source:', e);
+        if (currentSourceIndex < videoSources.length) {
+            tryNextSource();
+        } else {
+            showVideoError();
+        }
+    });
+
+    videoPlayer.addEventListener('waiting', function() {
+        console.log('⏳ Video buffering...');
+        videoLoading.style.display = 'block';
+    });
+
+    videoPlayer.addEventListener('playing', function() {
+        console.log('▶️ Video started playing');
+        videoLoading.style.display = 'none';
+    });
+
+    // Show modal and start trying sources
+    videoModal.style.display = 'flex';
+    tryNextSource();
+}
+
+
+// Convert video format
+async function convertVideoFormat(filename) {
+    try {
+        showMessage('Converting video format...', 'info');
+
+        const response = await fetch(`/api/convert_video/${filename}`, {
+            method: 'POST'
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            showMessage('Video converted successfully! Reloading...', 'success');
+            setTimeout(() => {
+                loadRecordings(); // Reload the list to show converted file
+            }, 2000);
+        } else {
+            showMessage('Conversion failed: ' + result.message, 'error');
+        }
+    } catch (error) {
+        console.error('Error converting video:', error);
+        showMessage('Error converting video', 'error');
+    }
+}
+
+
+
+// Load recordings when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    loadRecordings();
+});
+
+// Load recordings from server
+async function loadRecordings() {
+    showLoading(true);
+    
+    try {
+        const response = await fetch('/api/recordings');
+        const result = await response.json();
+        
+        if (result.success) {
+            allRecordings = result.recordings;
+            displayRecordings(allRecordings);
+            updateStatistics(allRecordings);
+        } else {
+            showMessage('Error loading recordings: ' + result.message, 'error');
+        }
+    } catch (error) {
+        console.error('Error loading recordings:', error);
+        showMessage('Error loading recordings', 'error');
+    } finally {
+        showLoading(false);
+    }
+}
+
+// Display recordings in table
+function displayRecordings(recordings) {
+    const tableBody = document.getElementById('recordingsTableBody');
+    const emptyState = document.getElementById('emptyState');
+    const table = document.getElementById('recordingsTable');
+    
+    if (recordings.length === 0) {
+        table.style.display = 'none';
+        emptyState.style.display = 'block';
+        return;
+    }
+    
+    table.style.display = 'table';
+    emptyState.style.display = 'none';
+    
+    tableBody.innerHTML = recordings.map(recording => `
+        <tr>
+            <td>
+                <input type="checkbox" class="recording-checkbox" 
+                       value="${recording.filename}" 
+                       onchange="toggleRecordingSelection('${recording.filename}', this.checked)">
+            </td>
+            <td>
+                <div class="filename-cell">
+                    <span class="material-icons" style="color: #e74c3c; margin-right: 8px;">videocam</span>
+                    ${recording.filename}
+                </div>
+            </td>
+            <td>${recording.created_time}</td>
+            <td>${recording.size} MB</td>
+            <td>${recording.duration}</td>
+            <td>
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="playRecording('${recording.filename}')">
+                        <span class="material-icons">play_arrow</span>
+                        Play
+                    </button>
+                    <button class="btn btn-success" onclick="downloadRecording('${recording.filename}')">
+                        <span class="material-icons">download</span>
+                        Download
+                    </button>
+                    <button class="btn btn-danger" onclick="deleteRecording('${recording.filename}')">
+                        <span class="material-icons">delete</span>
+                        Delete
+                    </button>
+                </div>
+            </td>
+        </tr>
+    `).join('');
+}
+
+// Update statistics
+function updateStatistics(recordings) {
+    document.getElementById('totalRecordings').textContent = recordings.length;
+    
+    const totalSize = recordings.reduce((sum, rec) => sum + rec.size, 0);
+    document.getElementById('totalSize').textContent = totalSize.toFixed(1) + ' MB';
+    
+    const oldest = recordings.length > 0 ? recordings[recordings.length - 1].created_time : '-';
+    document.getElementById('oldestRecording').textContent = oldest.split(' ')[0];
+}
+
+// Filter recordings
+function filterRecordings() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const filtered = allRecordings.filter(recording => 
+        recording.filename.toLowerCase().includes(searchTerm) ||
+        recording.created_time.toLowerCase().includes(searchTerm)
+    );
+    displayRecordings(filtered);
+}
+
+// Play recording in modal
+function playRecording(filename) {
+    const videoModal = document.getElementById('videoModal');
+    const videoPlayer = document.getElementById('videoPlayer');
+    const modalTitle = document.getElementById('videoModalTitle');
+    
+    modalTitle.textContent = `Playing: ${filename}`;
+
+    // Use the enhanced video route
+    videoPlayer.src = `/video/${filename}`;
+
+    // Set video type explicitly
+    videoPlayer.innerHTML = `
+        <source src="/video/${filename}" type="video/mp4">
+        Your browser does not support the video tag.
+    `;
+
+    videoModal.style.display = 'flex';
+
+    // Reset and load video
+    videoPlayer.load();
+
+    // Add event listeners for better UX
+    videoPlayer.addEventListener('loadeddata', function() {
+        console.log('Video loaded successfully');
+    });
+
+    videoPlayer.addEventListener('error', function(e) {
+        console.error('Video error:', e);
+        showMessage('Error loading video. The file might be corrupted or in an unsupported format.', 'error');
+    });
+
+    videoPlayer.addEventListener('waiting', function() {
+        console.log('Video buffering...');
+    });
+
+    videoPlayer.addEventListener('canplay', function() {
+        console.log('Video can start playing');
+    });
+}
+
+// Close video modal
+function closeVideoModal() {
+    const videoModal = document.getElementById('videoModal');
+    const videoPlayer = document.getElementById('videoPlayer');
+
+    videoPlayer.pause();
+    videoPlayer.src = '';
+    videoPlayer.innerHTML = '';
+    videoModal.style.display = 'none';
+}
+
+// Download recording
+function downloadRecording(filename) {
+    const link = document.createElement('a');
+    link.href = `/api/recordings/${filename}`;
+    link.download = filename;
+    link.click();
+}
+
+// Delete single recording
+async function deleteRecording(filename) {
+    if (!confirm(`Are you sure you want to delete "${filename}"?`)) {
+        return;
+    }
+    
+    try {
+        const response = await fetch(`/api/recordings/${filename}`, {
+            method: 'DELETE'
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            showMessage('Recording deleted successfully', 'success');
+            loadRecordings(); // Reload the list
+        } else {
+            showMessage('Error deleting recording: ' + result.message, 'error');
+        }
+    } catch (error) {
+        console.error('Error deleting recording:', error);
+        showMessage('Error deleting recording', 'error');
+    }
+}
+
+// Selection management
+function toggleRecordingSelection(filename, isSelected) {
+    if (isSelected) {
+        selectedRecordings.add(filename);
+    } else {
+        selectedRecordings.delete(filename);
+    }
+    updateBulkDeleteButton();
+}
+
+function toggleSelectAll(checkbox) {
+    const checkboxes = document.querySelectorAll('.recording-checkbox');
+    checkboxes.forEach(cb => {
+        cb.checked = checkbox.checked;
+        toggleRecordingSelection(cb.value, checkbox.checked);
+    });
+}
+
+function updateBulkDeleteButton() {
+    const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
+    bulkDeleteBtn.disabled = selectedRecordings.size === 0;
+    bulkDeleteBtn.textContent = `Delete Selected (${selectedRecordings.size})`;
+}
+
+// Bulk delete recordings
+async function bulkDeleteRecordings() {
+    if (selectedRecordings.size === 0) return;
+    
+    if (!confirm(`Are you sure you want to delete ${selectedRecordings.size} recording(s)?`)) {
+        return;
+    }
+    
+    try {
+        const response = await fetch('/api/recordings/bulk-delete', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                filenames: Array.from(selectedRecordings)
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            showMessage(result.message, 'success');
+            selectedRecordings.clear();
+            updateBulkDeleteButton();
+            loadRecordings(); // Reload the list
+        } else {
+            showMessage('Error deleting recordings: ' + result.message, 'error');
+        }
+    } catch (error) {
+        console.error('Error in bulk delete:', error);
+        showMessage('Error deleting recordings', 'error');
+    }
+}
+
+// Utility functions
+function showLoading(show) {
+    document.getElementById('loadingSpinner').style.display = show ? 'block' : 'none';
+}
+
+function showMessage(message, type) {
+    // Create or use existing message system
+    alert(`${type.toUpperCase()}: ${message}`);
+    // You can replace this with a better notification system
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById('videoModal');
+    if (event.target === modal) {
+        closeVideoModal();
+    }
+}
+</script>
+{% endblock %}
