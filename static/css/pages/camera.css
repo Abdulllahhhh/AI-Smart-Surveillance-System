@@ -1,0 +1,47 @@
+/* Camera Section Styles */
+.camera-section {
+    margin: 1.5rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Camera Feed Container */
+.camera-feed {
+    width: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #f8f9fa;
+    margin-top: 1rem;
+    border: 1px solid #dee2e6;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* Camera Container for Check-in/out Page */
+.camera-container {
+    width: 100%;
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    aspect-ratio: 16/9;
+}
+
+.camera-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Guidance Message Below Camera Feed */
+.guidance-message {
+    width: 100%;
+    padding: 0.75rem;
+    text-align: center;
+    color: #6c757d;
+    font-size: 0.9rem;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    margin-top: 1rem;
+} 

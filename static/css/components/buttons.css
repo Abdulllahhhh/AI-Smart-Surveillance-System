@@ -1,0 +1,255 @@
+/* Add User Button - User Management Page Header */
+.primary-btn {
+    background-color: #4C4CFF;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Scan Face Button - Add User Modal Form */
+.camera-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    background-color: #4C4CFF !important;
+    color: white !important;
+    border: none;
+    padding: 0.75rem 1.25rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    width: 100%;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.camera-btn:hover {
+    background-color: #3939ff !important;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+.camera-btn:active {
+    background-color: #2929ff !important;
+    transform: translateY(1px);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.camera-btn .material-icons {
+    font-size: 20px;
+    color: white !important;
+}
+
+.camera-btn:hover .material-icons {
+    color: white !important;
+}
+
+/* Capture Photo Button - Check-in/out Page */
+.capture-btn {
+    background-color: #4C4CFF;
+    color: white;
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 1rem auto;
+}
+
+.capture-btn img {
+    width: 20px;
+    height: 20px;
+    filter: brightness(0) invert(1);
+}
+
+.capture-btn .material-icons {
+    font-size: 20px;
+}
+
+/* Calendar Icon Button - Reports Page Date Filter */
+.icon-btn {
+    background: white;
+    border: 1px solid #ddd;
+    padding: 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-btn:hover {
+    background: #f5f5f5;
+}
+
+/* Admin Login Button - Base Template Bottom Left */
+.admin-btn {
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+}
+
+.admin-btn:hover {
+    background-color: #f0f0ff;
+}
+
+/* Secondary Button - Settings Page Database Section */
+.secondary-btn {
+    background-color: #f5f5f5;
+    color: #333;
+    border: 1px solid #ddd;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 1rem;
+}
+
+/* Modal Action Buttons - All Modal Forms */
+.modal-buttons {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+    margin-top: 1.5rem;
+}
+
+.modal-buttons button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* Save Button - Modal Forms */
+.modal-buttons button[type="submit"] {
+    background-color: #4C4CFF;
+    color: white;
+}
+
+/* Cancel Button - Modal Forms */
+.modal-buttons button[type="button"] {
+    background-color: #f5f5f5;
+    color: #666;
+}
+
+/* Logout Button - Base Template Bottom Left (Admin View) */
+.logout-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #666;
+    text-decoration: none;
+    padding: 8px;
+    border-radius: 4px;
+}
+
+.logout-btn:hover {
+    background-color: #f0f0ff;
+}
+
+/* Update the scan face button styles with more specific selectors */
+.modal-content .form-group .scan-face-btn,
+.scan-face-btn {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.75rem !important;
+    width: 100% !important;
+    padding: 0.75rem 1.5rem !important;
+    margin-top: 12px !important;
+    background-color: #4C4CFF !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 4px !important;
+    cursor: pointer !important;
+    font-size: 1rem !important;
+    font-weight: 500 !important;
+    transition: all 0.2s ease !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.modal-content .form-group .scan-face-btn:hover,
+.scan-face-btn:hover {
+    background-color: #3939ff !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15) !important;
+}
+
+.modal-content .form-group .scan-face-btn:active,
+.scan-face-btn:active {
+    background-color: #2929ff !important;
+    transform: translateY(1px) !important;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1) !important;
+}
+
+.modal-content .form-group .scan-face-btn .material-icons,
+.scan-face-btn .material-icons {
+    font-size: 1.25rem !important;
+    color: white !important;
+}
+
+/* Update the form group styles for better spacing */
+.form-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #333;
+    font-weight: 500;
+}
+
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    resize: vertical;
+    font-family: monospace;
+    font-size: 14px;
+    min-height: 100px;
+    margin-bottom: 8px;
+}
+
+.form-group textarea:focus {
+    outline: none;
+    border-color: #4C4CFF;
+    box-shadow: 0 0 0 2px rgba(76, 76, 255, 0.1);
+}
+
+/* Camera container styles */
+.camera-container {
+    width: 100%;
+    max-width: 640px;
+    margin: 0 auto 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.camera-container img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Guidance message styles */
+.instruction {
+    margin: 16px 0;
+    text-align: center;
+    color: #666;
+} 

@@ -1,0 +1,51 @@
+/* Table Styles */
+.table-container {
+    background: white;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.data-table th,
+.data-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.data-table th {
+    color: #666;
+    font-weight: 500;
+}
+
+/* Status Badge Styles */
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.status-badge.on-time {
+    background-color: #e6ffe6;
+    color: #008000;
+}
+
+.status-badge.late {
+    background-color: #ffe6e6;
+    color: #cc0000;
+}
+
+/* Attendance Table Section */
+.attendance-table-section {
+    margin-top: 2rem;
+}
+
+.attendance-table-section h2 {
+    margin-bottom: 1rem;
+} 

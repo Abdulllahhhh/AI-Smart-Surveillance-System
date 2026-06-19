@@ -1,0 +1,59 @@
+/* Navigation Sidebar Styles */
+nav {
+    width: 250px;
+    background-color: white;
+    min-height: 100vh;
+    padding: 20px;
+    box-shadow: 2px 0 4px rgba(0,0,0,0.1);
+    position: fixed;
+    left: 0;
+    top: 0;
+}
+
+/* Logo in Navigation */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #4C4CFF;
+    font-weight: bold;
+    padding: 10px 0 20px 0;
+}
+
+.logo img {
+    width: 24px;
+    height: 24px;
+}
+
+.logo .material-icons {
+    font-size: 24px;
+    color: #4C4CFF;
+}
+
+/* Navigation Menu Items */
+nav ul {
+    list-style: none;
+}
+
+nav ul li {
+    margin-bottom: 5px;
+}
+
+nav ul li a {
+    color: #666;
+    text-decoration: none;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-radius: 4px;
+}
+
+nav ul li a.active {
+    background-color: #f0f0ff;
+    color: #4C4CFF;
+}
+
+nav ul li a .material-icons {
+    font-size: 20px;
+} 

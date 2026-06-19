@@ -1,0 +1,14 @@
+/* Import all CSS files */
+@import 'base/reset.css';
+@import 'base/typography.css';
+@import 'layout/navigation.css';
+@import 'layout/grid.css';
+@import 'layout/header.css';
+@import 'components/buttons.css';
+@import 'components/forms.css';
+@import 'components/tables.css';
+@import 'components/modal.css';
+@import 'components/badges.css';
+@import 'pages/camera.css';
+@import 'pages/settings.css';
+@import 'pages/reports.css';

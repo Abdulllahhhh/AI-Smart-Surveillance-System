@@ -1,0 +1,88 @@
+.camera-section {
+    margin: 1rem 0;
+    text-align: center;
+}
+
+.camera-btn {
+    width: auto !important;
+    min-width: 200px;
+    margin: 1rem 0;
+}
+
+.camera-modal {
+    width: 90% !important;
+    max-width: 800px !important;
+}
+
+.camera-container {
+    background: #000;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 1rem;
+}
+
+.video-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4/3;
+}
+
+.video-container video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.video-container canvas.face-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.guidance-message {
+    text-align: center;
+    margin: 1rem 0;
+    padding: 0.5rem;
+    font-size: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+}
+
+.camera-controls {
+    padding: 1rem;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    background: #fff;
+}
+
+.capture-btn, .cancel-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.capture-btn {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.capture-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.cancel-btn {
+    background-color: #f44336;
+    color: white;
+}
+
+/* Remove old camera feed styles */ 
