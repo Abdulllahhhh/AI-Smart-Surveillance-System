@@ -4,8 +4,6 @@ AI-powered smart surveillance system developed as my Final Year Graduation Proje
 
 The project focuses on improving traditional surveillance systems by adding real-time video monitoring, face recognition, video recording, and a web dashboard for managing users and recordings.
 
-This repository is a portfolio version of the project. It includes selected source code, screenshots, and demo results. Private data such as user records, face data, passwords, and recorded videos are not included.
-
 ---
 
 ## Features
